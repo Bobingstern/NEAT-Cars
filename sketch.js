@@ -8,7 +8,7 @@ var population;
 var speed = 60;
 
 
-var showBest = true; //true if only show the best of the previous generation
+var showBest = false; //true if only show the best of the previous generation
 var runBest = false; //true if replaying the best ever game
 var humanPlaying = false; //true if the user is playing
 
@@ -28,11 +28,12 @@ var showNothing = false;
 function setup() {
   window.canvas = createCanvas(1280, 720);
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
-  population = new Population(500);
+  population = new Population(1);
   humanPlayer = new Player();
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 function draw() {
+  background(56)
   drawToScreen();
   if (showBestEachGen) { //show the best of each gen
     showBestPlayersForEachGeneration();
@@ -103,8 +104,8 @@ function drawToScreen() {
 function drawBrain() { //show the brain of whatever genome is currently showing
   var startX = 0; //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
   var startY = 0;
-  var w = 0;
-  var h = 0;
+  var w = 200;
+  var h = 300;
 
   if (runBest) {
     population.bestPlayer.brain.drawGenome(startX, startY, w, h);
