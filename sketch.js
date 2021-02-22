@@ -21,33 +21,82 @@ var upToGen = 0;
 var genPlayerTemp; //player
 
 var showNothing = false;
+var started = true
+let editor
+
+let Map = []
+let Default = [[384, 586, 362, 577],
+[360, 576, 328, 548],
+ [326, 546, 304, 486],
+ [303, 485, 195, 290],
+ [196, 290, 250, 156],
+ [250, 156, 336, 84],
+ [336, 84, 540, 54],
+ [540, 54, 804, 80],
+ [804, 80, 1016, 31],
+ [1017, 34, 1208, 136],
+[1208, 136, 1149, 297],
+[1146, 299, 970, 333],
+[970, 333, 813, 472],
+[800, 484, 692, 599],
+[690, 598, 386, 586],
+[800, 482, 811, 476],
+[386, 520, 408, 536],
+[414, 537, 668, 546],
+[668, 546, 890, 319],
+[890, 319, 1016, 263],
+[1016, 263, 1111, 249],
+[1108, 252, 1136, 156],
+[1131, 156, 1018, 88],
+[1018, 88, 850, 130],
+[848, 130, 578, 117],
+[578, 117, 391, 131],
+[391, 131, 324, 191],
+[324, 191, 288, 290],
+[288, 290, 382, 518]
+]
 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 
+function StartEvo(){
+  population = new Population(1);
+}
+
+
 function setup() {
   window.canvas = createCanvas(1280, 720);
+  editor = new Editor()
+  StartEvo()
+
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
-  population = new Population(1);
-  humanPlayer = new Player();
+
+
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 function draw() {
   background(56)
-  drawToScreen();
-  if (showBestEachGen) { //show the best of each gen
-    showBestPlayersForEachGeneration();
-  } else if (humanPlaying) { //if the user is controling the ship[
-    showHumanPlaying();
-  } else if (runBest) { // if replaying the best ever game
-    showBestEverPlayer();
-  } else { //if just evolving normally
-    if (!population.done()) { //if any players are alive then update them
-      population.updateAlive();
-    } else { //all dead
-      //genetic algorithm
-      population.naturalSelection();
+  editor.show()
+  if (started){
+    drawToScreen();
+    if (showBestEachGen) { //show the best of each gen
+      showBestPlayersForEachGeneration();
+    } else if (humanPlaying) { //if the user is controling the ship[
+      showHumanPlaying();
+    } else if (runBest) { // if replaying the best ever game
+      showBestEverPlayer();
+    } else { //if just evolving normally
+      if (!population.done()) { //if any players are alive then update them
+        population.updateAlive();
+      } else { //all dead
+        //genetic algorithm
+        population.naturalSelection();
+      }
     }
+  }
+  else{
+    editor.update()
+    editor.show()
   }
 }
 //-----------------------------------------------------------------------------------

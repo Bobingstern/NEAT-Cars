@@ -12,14 +12,14 @@ class Player {
     this.score = 0;
     this.gen = 0;
 
-    this.pos = createVector(width/2, height/2)
+    this.pos = createVector(800, 450)
     this.vel = createVector()
-    this.drag = 0.99
-    this.angle = 0
+    this.drag = 0.95
+    this.angle = -0.75
     this.angularVelocity = 0
     this.angularDrag = 0.9
-    this.power = 0.5
-    this.turnSpeed = 0.01
+    this.power = 0.3
+    this.turnSpeed = 0.008
 
 
 
@@ -29,7 +29,9 @@ class Player {
     this.vel.limit(2)
 
     this.edgeLines = []
-
+    this.w = 7
+    this.h = 15
+    this.Color = color(255, 0, 0)
 
   }
 
@@ -40,11 +42,10 @@ class Player {
       translate(this.pos.x, this.pos.y)
       rectMode(CENTER)
       rotate((-this.angle))
-      fill(255, 0, 0)
-      rect(0, 0, 20, 50)
-      fill(255, 255, 0)
-      ellipse(-5, 20, 5, 5)
-      ellipse(5, 20, 5, 5)
+      fill(this.Color)
+      rect(0, 0, this.w, this.h)
+
+
       pop()
 
 
@@ -86,15 +87,15 @@ class Player {
         this.angularVelocity -= this.turnSpeed
       }
 
-      //-----------------edgeLines
-      let X = this.pos.x-10
-      let Y = this.pos.y-25
+      //-----------------edgeLines--------------------------------------------
+      let X = this.pos.x-this.w/2
+      let Y = this.pos.y-this.h/2
 
       let New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
       let New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
 
-      X = this.pos.x-10
-      Y = this.pos.y+25
+      X = this.pos.x-this.w/2
+      Y = this.pos.y+this.h/2
 
       let New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
       let New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
@@ -103,14 +104,14 @@ class Player {
 
 
       //--
-      X = this.pos.x+10
-      Y = this.pos.y-25
+      X = this.pos.x+this.w/2
+      Y = this.pos.y-this.h/2
 
       New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
       New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
 
-      X = this.pos.x+10
-      Y = this.pos.y+25
+      X = this.pos.x+this.w/2
+      Y = this.pos.y+this.h/2
 
       New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
       New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
@@ -119,14 +120,14 @@ class Player {
 
 
       //--
-      X = this.pos.x+10
-      Y = this.pos.y+25
+      X = this.pos.x+this.w/2
+      Y = this.pos.y+this.h/2
 
       New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
       New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
 
-      X = this.pos.x-10
-      Y = this.pos.y+25
+      X = this.pos.x-this.w/2
+      Y = this.pos.y+this.h/2
 
       New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
       New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
@@ -134,19 +135,45 @@ class Player {
       this.edgeLines[2] = [New_X, New_Y, New_X2, New_Y2]
 
       //--
-      X = this.pos.x+10
-      Y = this.pos.y-25
+      X = this.pos.x+this.w/2
+      Y = this.pos.y-this.h/2
 
       New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
       New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
 
-      X = this.pos.x-10
-      Y = this.pos.y-25
+      X = this.pos.x-this.w/2
+      Y = this.pos.y-this.h/2
 
       New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
       New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
 
       this.edgeLines[3] = [New_X, New_Y, New_X2, New_Y2]
+      //------------------------------------------------------Collision
+
+      var colled = false
+      for (var i=0;i<Default.length;i++){
+        for (var j=0;j<this.edgeLines.length;j++){
+          var hit = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], this.edgeLines[j][0], this.edgeLines[j][1], this.edgeLines[j][2], this.edgeLines[j][3])
+          if (hit){
+            var hitPoint = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], this.edgeLines[j][0], this.edgeLines[j][1], this.edgeLines[j][2], this.edgeLines[j][3], true)
+            colled = true
+
+          }
+        }
+      }
+
+      if (colled){
+        //ded
+        //this.dead = true
+        this.Color = color(0, 0, 0)
+      }
+      else{
+        this.Color = color(255, 0, 0)
+      }
+
+      //----------
+
+
 
 
     }
