@@ -202,7 +202,7 @@ class Player {
         if (hit){
           colled = true
           this.on++
-          this.fitness += 100+this.vel.mag()
+          this.fitness += 100
           this.score++
           this.lifespan+=10
           if (this.on > YummyGates.length-1){

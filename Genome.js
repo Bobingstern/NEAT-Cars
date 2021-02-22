@@ -6,6 +6,7 @@ class Genome {
     this.outputs = outputs;
     this.layers = 2;
     this.nextNode = 0;
+    this.ins = []
     // this.biasNode;
     this.network = []; //a list of the this.nodes in the order that they need to be considered in the NN
     //create input this.nodes
@@ -92,6 +93,7 @@ class Genome {
   //feeding in input values varo the NN and returning output array
   feedForward(inputValues) {
     //set the outputs of the input this.nodes
+    this.ins = inputValues
     for (var i = 0; i < this.inputs; i++) {
       this.nodes[i].outputValue = inputValues[i];
     }
@@ -110,6 +112,8 @@ class Genome {
     for (var i = 0; i < this.nodes.length; i++) { //reset all the this.nodes for the next feed forward
       this.nodes[i].inputSum = 0;
     }
+
+
 
     return outs;
   }
@@ -430,6 +434,7 @@ class Genome {
     var allNodes = []; //new ArrayList<ArrayList<Node>>();
     var nodePoses = []; // new ArrayList<PVector>();
     var nodeNumbers = []; // new ArrayList<Integer>();
+    var triggers = []
 
     //get the positions on the screen that each node is supposed to be in
 
@@ -469,13 +474,34 @@ class Genome {
       var to;
       from = nodePoses[nodeNumbers.indexOf(this.genes[i].fromNode.number)];
       to = nodePoses[nodeNumbers.indexOf(this.genes[i].toNode.number)];
+      var ee = 0
       if (this.genes[i].weight > 0) {
         stroke(255, 0, 0);
+        ee = 0
       } else {
         stroke(0, 0, 255);
+        ee = 1
       }
-      strokeWeight(map(abs(this.genes[i].weight), 0, 1, 0, 3));
-      line(from.x, from.y, to.x, to.y);
+      if (this.ins.length > 0){
+        if (this.ins[i] > 0.5){
+
+          strokeWeight(map(abs(this.genes[i].weight), 0, 1, 0, 3));
+          line(from.x, from.y, to.x, to.y);
+          triggers.push([nodeNumbers.indexOf(this.genes[i].toNode.number), ee])
+        }
+
+
+
+      }
+
+      if (i == this.genes.length-1){
+        stroke(0)
+        strokeWeight(5);
+        line(from.x, from.y, to.x, to.y);
+      }
+
+
+
     }
 
     //draw this.nodes last so they appear ontop of the connection lines
@@ -487,26 +513,37 @@ class Genome {
       textSize(10);
       fill(0);
       textAlign(CENTER, CENTER);
-      text(nodeNumbers[i], nodePoses[i].x, nodePoses[i].y);
 
     }
 
+
+
+
     // print out neural network info text
-    // textAlign(RIGHT);
-    // fill(255);
-    // textSize(15);
-    // noStroke();
-    // text("car angle", nodePoses[0].x - 20, nodePoses[0].y);
-    // text("touching ground", nodePoses[1].x - 20, nodePoses[1].y);
-    // text("angular velocity", nodePoses[2].x - 20, nodePoses[2].y);
-    // text("Distance to ground", nodePoses[3].x - 20, nodePoses[3].y);
-    // text("gradient", nodePoses[4].x - 20, nodePoses[4].y);
-    // text("bias", nodePoses[5].x - 20, nodePoses[5].y);
-    // textAlign(LEFT);
-    // text("gas", nodePoses[nodePoses.length - 2].x + 20, nodePoses[nodePoses.length - 2].y);
-    // text("break", nodePoses[nodePoses.length - 1].x + 20, nodePoses[nodePoses.length - 1].y);
+    push()
+    textAlign(RIGHT);
+    fill(255);
+    textSize(15);
+    noStroke();
+    if(this.ins.length > 0){
+      text(round(this.ins[0]), nodePoses[0].x - 20, nodePoses[0].y);
+      text(round(this.ins[1]), nodePoses[1].x - 20, nodePoses[1].y);
+      text(round(this.ins[2]), nodePoses[2].x - 20, nodePoses[2].y);
+      text(round(this.ins[3]), nodePoses[3].x - 20, nodePoses[3].y);
+      text(round(this.ins[4]), nodePoses[4].x - 20, nodePoses[4].y);
+
+
+    }
+    text("bias", nodePoses[5].x - 20, nodePoses[5].y);
+    textAlign(LEFT);
+    text("Forward", nodePoses[nodePoses.length - 4].x + 20, nodePoses[nodePoses.length - 4].y);
+    text("Backward", nodePoses[nodePoses.length - 3].x + 20, nodePoses[nodePoses.length - 3].y);
+    text("Left", nodePoses[nodePoses.length - 2].x + 20, nodePoses[nodePoses.length - 2].y);
+    text("Right", nodePoses[nodePoses.length - 1].x + 20, nodePoses[nodePoses.length - 1].y);
+    pop()
 
 
 
-  }
+
+}
 }
