@@ -20,11 +20,12 @@ class Player {
     this.angularDrag = 0.9
     this.power = 0.3
     this.turnSpeed = 0.008
+    this.visionLines = []
 
 
 
     this.genomeInputs = 5;
-    this.genomeOutputs = 2;
+    this.genomeOutputs = 4;
     this.brain = new Genome(this.genomeInputs, this.genomeOutputs);
     this.vel.limit(2)
 
@@ -32,6 +33,11 @@ class Player {
     this.w = 7
     this.h = 15
     this.Color = color(255, 0, 0)
+    this.on = 0
+    this.oofMeter = 0
+    this.old = this.pos.copy()
+    this.time = 0
+
 
   }
 
@@ -51,7 +57,12 @@ class Player {
 
       for (var i=0;i<this.edgeLines.length;i++){
         strokeWeight(2)
-        line(this.edgeLines[i][0], this.edgeLines[i][1], this.edgeLines[i][2],this.edgeLines[i][3])
+        //line(this.edgeLines[i][0], this.edgeLines[i][1], this.edgeLines[i][2],this.edgeLines[i][3])
+      }
+
+      for (var i=0;i<this.visionLines.length;i++){
+        strokeWeight(2)
+        //line(this.visionLines[i][0], this.visionLines[i][1], this.visionLines[i][2],this.visionLines[i][3])
       }
       //---
 
@@ -62,11 +73,30 @@ class Player {
     }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
   move() {
-      //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
+      if (this.decision[0] > 0.5){
+        this.accelerate()
+      }
+
+      if (this.decision[1] > 0.5){
+        this.decelerate()
+      }
+
+      if (this.decision[2] > 0.5){
+        this.angularVelocity += this.turnSpeed
+      }
+
+      if (this.decision[3] > 0.5){
+        this.angularVelocity -= this.turnSpeed
+      }
+
     }
 
   accelerate(){
     this.vel.add(new p5.Vector(sin(this.angle)*this.power, cos(this.angle)*this.power))
+  }
+
+  decelerate(){
+    this.vel.sub(new p5.Vector(sin(this.angle)*this.power, cos(this.angle)*this.power))
   }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
   update() {
@@ -77,15 +107,7 @@ class Player {
       this.angle += this.angularVelocity
       this.angularVelocity *= this.angularDrag
 
-      if (keyIsDown(UP_ARROW)){
-        this.accelerate()
-      }
-      if (keyIsDown(LEFT_ARROW)){
-        this.angularVelocity += this.turnSpeed
-      }
-      if (keyIsDown(RIGHT_ARROW)){
-        this.angularVelocity -= this.turnSpeed
-      }
+
 
       //-----------------edgeLines--------------------------------------------
       let X = this.pos.x-this.w/2
@@ -148,6 +170,7 @@ class Player {
       New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
 
       this.edgeLines[3] = [New_X, New_Y, New_X2, New_Y2]
+
       //------------------------------------------------------Collision
 
       var colled = false
@@ -164,14 +187,58 @@ class Player {
 
       if (colled){
         //ded
-        //this.dead = true
+        this.dead = true
         this.Color = color(0, 0, 0)
       }
       else{
         this.Color = color(255, 0, 0)
       }
 
-      //----------
+
+      colled = false
+      var check = YummyGates[this.on]
+      for (var j=0;j<this.edgeLines.length;j++){
+        var hit = collideLineLine(check[0], check[1], check[2], check[3], this.edgeLines[j][0], this.edgeLines[j][1], this.edgeLines[j][2], this.edgeLines[j][3])
+        if (hit){
+          colled = true
+          this.on++
+          this.fitness += 100+this.vel.mag()
+          this.score++
+          this.lifespan+=10
+          if (this.on > YummyGates.length-1){
+            this.on=0
+          }
+
+        }
+      }
+
+      this.fitness += 10000/dist(this.pos.x, this.pos.y, YummyGates[this.on][0], YummyGates[this.on][1])/2
+
+      line(YummyGates[this.on][0], YummyGates[this.on][1], YummyGates[this.on][2], YummyGates[this.on][3])
+
+
+      this.time++
+      if (this.time > 500)[
+        this.dead = true
+      ]
+
+      //--------------------
+      if (this.time % 10 == 0){
+        if (dist(this.old.x, this.old.y, this.pos.x, this.pos.y) < 5){
+          this.oofMeter++
+
+
+        }
+        this.old = this.pos.copy()
+      }
+
+      if (this.oofMeter > 2)[
+        this.dead = true
+      ]
+
+      this.move()
+
+
 
 
 
@@ -180,7 +247,188 @@ class Player {
     //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
   look() {
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
+    let leng = 2
+
+
+      for (var x=0;x<300;x++){
+        let X = this.pos.x
+        let Y = this.pos.y
+
+        let New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+        X = this.pos.x
+        Y = this.pos.y+this.h*2+x
+
+        let New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+
+        var collided = false
+        for (var i=0;i<Default.length;i++){
+          var hit = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], New_X, New_Y, New_X2, New_Y2)
+          if (hit){
+            collided = true
+          }
+        }
+        if (collided){
+          this.visionLines[0] = [New_X, New_Y, New_X2, New_Y2]
+          break
+        }
+
+
+
+      }
+
+      for (var x=0;x<300;x++){
+        let X = this.pos.x
+        let Y = this.pos.y
+
+        let New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+        X = this.pos.x+this.w*2+x
+        Y = this.pos.y+this.h*2+x
+
+        let New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+
+        var collided = false
+        for (var i=0;i<Default.length;i++){
+          var hit = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], New_X, New_Y, New_X2, New_Y2)
+          if (hit){
+            collided = true
+          }
+        }
+        if (collided){
+          this.visionLines[1] = [New_X, New_Y, New_X2, New_Y2]
+          break
+        }
+
+      }
+
+
+      for (var x=0;x<300;x++){
+        let X = this.pos.x
+        let Y = this.pos.y
+
+        let New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+        X = this.pos.x-this.w*2-x
+        Y = this.pos.y+this.h*2+x
+
+        let New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+
+        var collided = false
+        for (var i=0;i<Default.length;i++){
+          var hit = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], New_X, New_Y, New_X2, New_Y2)
+          if (hit){
+            collided = true
+          }
+        }
+        if (collided){
+          this.visionLines[2] = [New_X, New_Y, New_X2, New_Y2]
+          break
+        }
+
+
+
+      }
+
+      for (var x=0;x<300;x++){
+        let X = this.pos.x
+        let Y = this.pos.y
+
+        let New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+        X = this.pos.x-this.w*2-x
+        Y = this.pos.y
+
+        let New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+
+        var collided = false
+        for (var i=0;i<Default.length;i++){
+          var hit = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], New_X, New_Y, New_X2, New_Y2)
+          if (hit){
+            collided = true
+          }
+        }
+        if (collided){
+          this.visionLines[3] = [New_X, New_Y, New_X2, New_Y2]
+          break
+        }
+
+
+
+      }
+
+
+
+
+      for (var x=0;x<300;x++){
+        let X = this.pos.x
+        let Y = this.pos.y
+
+        let New_X = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+        X = this.pos.x+this.w*2+x
+        Y = this.pos.y
+
+        let New_X2 = this.pos.x + (X - this.pos.x) * cos(-this.angle) - (Y - this.pos.y) * sin(-this.angle)
+        let New_Y2 = this.pos.y + (X - this.pos.x) * sin(-this.angle) + (Y - this.pos.y) * cos(-this.angle)
+
+
+        var collided = false
+        for (var i=0;i<Default.length;i++){
+          var hit = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], New_X, New_Y, New_X2, New_Y2)
+          if (hit){
+            collided = true
+          }
+        }
+        if (collided){
+          this.visionLines[4] = [New_X, New_Y, New_X2, New_Y2]
+          break
+        }
+
+
+
+      }
+
+
+
+
+
+
+
+
+  this.vision = []
+
+   var colled = false
+   for (var i=0;i<Default.length;i++){
+     for (var j=0;j<this.visionLines.length;j++){
+       var hit = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], this.visionLines[j][0], this.visionLines[j][1], this.visionLines[j][2], this.visionLines[j][3])
+       if (hit){
+
+         var hitPoint = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], this.visionLines[j][0], this.visionLines[j][1], this.visionLines[j][2], this.visionLines[j][3], true)
+         colled = true
+         //ellipse(hitPoint.x, hitPoint.y, 5, 5)
+
+         this.vision.push(dist(hitPoint.x, hitPoint.y, this.pos.x, this.pos.y))
+
+       }
+     }
+   }
+
+
+
 
   }
 

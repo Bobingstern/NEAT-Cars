@@ -15,7 +15,7 @@ var humanPlaying = false; //true if the user is playing
 var humanPlayer;
 
 
-var showBrain = false;
+var showBrain = true;
 var showBestEachGen = false;
 var upToGen = 0;
 var genPlayerTemp; //player
@@ -56,11 +56,72 @@ let Default = [[384, 586, 362, 577],
 [288, 290, 382, 518]
 ]
 
+let YummyGates = [
+[743, 450, 797, 529],
+[716, 479, 765, 557],
+[686, 509, 727, 586],
+[667, 529, 695, 617],
+[648, 533, 633, 620],
+[612, 529, 597, 607],
+[571, 527, 558, 603],
+[543, 524, 518, 608],
+[504, 524, 477, 605],
+[465, 529, 428, 596],
+[442, 514, 372, 600],
+[407, 517, 328, 570],
+[383, 490, 308, 546],
+[369, 465, 277, 513],
+[356, 436, 253, 477],
+[350, 405, 248, 434],
+[346, 392, 238, 394],
+[319, 356, 220, 356],
+[315, 321, 190, 313],
+[315, 288, 198, 258],
+[319, 258, 230, 206],
+[323, 221, 248, 150],
+[339, 184, 297, 103],
+[362, 166, 345, 70],
+[389, 138, 395, 56],
+[410, 138, 438, 53],
+[439, 133, 486, 46],
+[478, 126, 515, 41],
+[530, 122, 530, 37],
+[566, 120, 568, 33],
+[595, 123, 604, 38],
+[634, 128, 642, 52],
+[665, 122, 678, 56],
+[697, 124, 717, 65],
+[739, 127, 769, 64],
+[781, 134, 807, 57],
+[828, 133, 834, 66],
+[871, 129, 860, 66],
+[910, 122, 883, 52],
+[947, 109, 928, 51],
+[995.4285736083984, 104, 961.4285736083984, 29],
+[1016.4285736083984, 104, 1024.4285736083984, 17],
+[1033.4285736083984, 105, 1090.4285736083984, 47],
+[1065.4285736083984, 126, 1128.4285736083984, 77],
+[1096.4285736083984, 168, 1180.4285736083984, 109],
+[1107.4285736083984, 184, 1206.4285736083984, 177],
+[1103.4285736083984, 218, 1188.4285736083984, 236],
+[1068.4285736083984, 233, 1148.4285736083984, 319],
+[1041.4285736083984, 237, 1072.4285736083984, 335],
+[999.4285736083984, 250, 1027.4285736083984, 343],
+[964.4285736083984, 265, 993.4285736083984, 348],
+[927.4285736083984, 285, 963.4285736083984, 380],
+[892.4285736083984, 303, 932.4285736083984, 397],
+[857.4285736083984, 328, 911.4285736083984, 422],
+[831.4285736083984, 360, 888.4285736083984, 455],
+[813.4285736083984, 381, 859.4285736083984, 470],
+[795.4285736083984, 398, 838.4285736083984, 496],
+[773.4285736083984, 425, 820.4285736083984, 504]
+]
+
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 
 function StartEvo(){
-  population = new Population(1);
+  population = new Population(100);
 }
 
 
@@ -76,7 +137,17 @@ function setup() {
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 function draw() {
   background(56)
-  editor.show()
+  for (var i=0;i<Default.length;i++){
+    strokeWeight(3)
+    line(Default[i][0], Default[i][1], Default[i][2], Default[i][3])
+  }
+
+  for (var i=0;i<YummyGates.length;i++){
+    push()
+    stroke(255, 255, 0)
+    //line(YummyGates[i][0], YummyGates[i][1], YummyGates[i][2], YummyGates[i][3])
+    pop()
+  }
   if (started){
     drawToScreen();
     if (showBestEachGen) { //show the best of each gen
@@ -194,65 +265,3 @@ function writeInfo() {
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-
-function keyPressed() {
-  switch (key) {
-    case ' ':
-      //toggle showBest
-      showBest = !showBest;
-      break;
-      // case '+': //speed up frame rate
-      //   speed += 10;
-      //   frameRate(speed);
-      //   prvarln(speed);
-      //   break;
-      // case '-': //slow down frame rate
-      //   if(speed > 10) {
-      //     speed -= 10;
-      //     frameRate(speed);
-      //     prvarln(speed);
-      //   }
-      //   break;
-    case 'B': //run the best
-      runBest = !runBest;
-      break;
-    case 'G': //show generations
-      showBestEachGen = !showBestEachGen;
-      upToGen = 0;
-      genPlayerTemp = population.genPlayers[upToGen].clone();
-      break;
-    case 'N': //show absolutely nothing in order to speed up computation
-      showNothing = !showNothing;
-      break;
-    case 'P': //play
-      humanPlaying = !humanPlaying;
-      humanPlayer = new Player();
-      break;
-  }
-  //any of the arrow keys
-  switch (keyCode) {
-    case UP_ARROW: //the only time up/ down / left is used is to control the player
-      //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
-      break;
-    case DOWN_ARROW:
-      //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
-      break;
-    case LEFT_ARROW:
-      //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
-      break;
-    case RIGHT_ARROW: //right is used to move through the generations
-
-      if (showBestEachGen) { //if showing the best player each generation then move on to the next generation
-        upToGen++;
-        if (upToGen >= population.genPlayers.length) { //if reached the current generation then exit out of the showing generations mode
-          showBestEachGen = false;
-        } else {
-          genPlayerTemp = population.genPlayers[upToGen].cloneForReplay();
-        }
-      } else if (humanPlaying) { //if the user is playing then move player right
-
-        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
-      }
-      break;
-  }
-}
