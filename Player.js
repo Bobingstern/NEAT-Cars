@@ -212,7 +212,6 @@ class Player {
         }
       }
 
-      this.fitness += 10000/dist(this.pos.x, this.pos.y, YummyGates[this.on][0], YummyGates[this.on][1])/2
 
       line(YummyGates[this.on][0], YummyGates[this.on][1], YummyGates[this.on][2], YummyGates[this.on][3])
 
@@ -236,7 +235,6 @@ class Player {
         this.dead = true
       ]
 
-      this.move()
 
 
 
@@ -448,6 +446,7 @@ class Player {
           maxIndex = i;
         }
       }
+      this.move()
 
       //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
     }

@@ -7,6 +7,7 @@ class Genome {
     this.layers = 2;
     this.nextNode = 0;
     this.ins = []
+    this.outs = []
     // this.biasNode;
     this.network = []; //a list of the this.nodes in the order that they need to be considered in the NN
     //create input this.nodes
@@ -114,7 +115,7 @@ class Genome {
     }
 
 
-
+    this.outs = outs
     return outs;
   }
 
@@ -312,7 +313,7 @@ class Genome {
 
     //1% of the time add a node
     var rand3 = random(1);
-    if (rand3 < 0.1) {
+    if (rand3 < 0.3) {
 
       this.addNode(innovationHistory);
 
@@ -482,12 +483,11 @@ class Genome {
         stroke(0, 0, 255);
         ee = 1
       }
-      if (this.ins.length > 0){
-        if (this.ins[i] > 0.5){
+      if (this.outs.length > 0){
+        if (this.outs[i] > 0.5){
 
-          strokeWeight(map(abs(this.genes[i].weight), 0, 1, 0, 3));
+          strokeWeight(map(abs(this.outs[i]), 0, 1, 0, 3));
           line(from.x, from.y, to.x, to.y);
-          triggers.push([nodeNumbers.indexOf(this.genes[i].toNode.number), ee])
         }
 
 
@@ -526,20 +526,26 @@ class Genome {
     textSize(15);
     noStroke();
     if(this.ins.length > 0){
-      text(round(this.ins[0]), nodePoses[0].x - 20, nodePoses[0].y);
-      text(round(this.ins[1]), nodePoses[1].x - 20, nodePoses[1].y);
-      text(round(this.ins[2]), nodePoses[2].x - 20, nodePoses[2].y);
-      text(round(this.ins[3]), nodePoses[3].x - 20, nodePoses[3].y);
-      text(round(this.ins[4]), nodePoses[4].x - 20, nodePoses[4].y);
+      push()
+      fill(0)
+      stroke(0)
+      textSize(10)
+      textAlign(CENTER)
+      text(round(this.ins[0]), nodePoses[0].x, nodePoses[0].y);
+      text(round(this.ins[1]), nodePoses[1].x, nodePoses[1].y);
+      text(round(this.ins[2]), nodePoses[2].x, nodePoses[2].y);
+      text(round(this.ins[3]), nodePoses[3].x, nodePoses[3].y);
+      text(round(this.ins[4]), nodePoses[4].x, nodePoses[4].y);
+      pop()
 
 
     }
     text("bias", nodePoses[5].x - 20, nodePoses[5].y);
     textAlign(LEFT);
-    text("Forward", nodePoses[nodePoses.length - 4].x + 20, nodePoses[nodePoses.length - 4].y);
-    text("Backward", nodePoses[nodePoses.length - 3].x + 20, nodePoses[nodePoses.length - 3].y);
-    text("Left", nodePoses[nodePoses.length - 2].x + 20, nodePoses[nodePoses.length - 2].y);
-    text("Right", nodePoses[nodePoses.length - 1].x + 20, nodePoses[nodePoses.length - 1].y);
+    text("Forward ", nodePoses[nodePoses.length - 4].x + 20, nodePoses[nodePoses.length - 4].y);
+    text("Backward ", nodePoses[nodePoses.length - 3].x + 20, nodePoses[nodePoses.length - 3].y);
+    text("Left ", nodePoses[nodePoses.length - 2].x + 20, nodePoses[nodePoses.length - 2].y);
+    text("Right ", nodePoses[nodePoses.length - 1].x + 20, nodePoses[nodePoses.length - 1].y);
     pop()
 
 
