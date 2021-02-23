@@ -73,19 +73,19 @@ class Player {
     }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
   move() {
-      if (this.decision[0] > 0.5){
+      if (this.decision[3] > 0.5){
         this.accelerate()
       }
 
-      if (this.decision[1] > 0.5){
+      if (this.decision[2] > 0.5){
         this.decelerate()
       }
 
-      if (this.decision[2] > 0.5){
+      if (this.decision[1] > 0.5){
         this.angularVelocity += this.turnSpeed
       }
 
-      if (this.decision[3] > 0.5){
+      if (this.decision[0] > 0.5){
         this.angularVelocity -= this.turnSpeed
       }
 

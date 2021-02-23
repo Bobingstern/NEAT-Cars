@@ -120,6 +120,8 @@ let YummyGates = [
 
 let batches = 4
 
+let bestGen = null
+
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -180,9 +182,22 @@ function draw() {
       showBestEverPlayer();
     } else { //if just evolving normally
       if (population.batchNo != population.batches+1) { //if any players are alive then update them
+
         population.updateAliveInBatches();
+        if (bestGen != null){
+          if (!bestGen.dead){
+            bestGen.Color = color(0, 255, 0)
+            bestGen.look()
+            bestGen.think()
+            bestGen.update()
+            bestGen.show()
+          }
+        }
       } else { //all dead
         //genetic algorithm
+
+        bestGen = new Player()
+        bestGen.brain = population.players[getBest()].brain
         population.naturalSelection();
       }
     }
@@ -252,15 +267,22 @@ function drawBrain() { //show the brain of whatever genome is currently showing
   var h = 300;
 
   if (runBest) {
-    getBest().brain.drawGenome(startX, startY, w, h);
+    let boi = getBest()
+    population.players[boi].brain.drawGenome(startX, startY, w, h);
   } else
   if (humanPlaying) {
     showBrain = false;
   } else if (showBestEachGen) {
-    genPlayerTemp.brain.drawGenome(startX, startY, w, h);
-  } else {
     let boi = getBest()
     population.players[boi].brain.drawGenome(startX, startY, w, h);
+  } else {
+    if (bestGen == null){
+      let boi = getBest()
+      population.players[boi].brain.drawGenome(startX, startY, w, h);
+    }
+    else{
+      bestGen.brain.drawGenome(startX, startY, w, h);
+    }
   }
 }
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -281,10 +303,10 @@ function writeInfo() {
     text("Gen: " + population.gen, 1150, 50);
   } else {
     if (showBest) {
-      text("Score: " + population.players[0].score, 650, 50); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
-      text("Gen: " + population.gen, 1150, 50);
-      text("Species: " + population.species.length, 50, canvas.height / 2 + 300);
-      text("Global Best Score: " + population.bestScore, 50, canvas.height / 2 + 200);
+      // text("Score: " + population.players[0].score, 650, 50); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
+      // text("Gen: " + population.gen, 1150, 50);
+      // text("Species: " + population.species.length, 50, canvas.height / 2 + 300);
+      // text("Global Best Score: " + population.bestScore, 50, canvas.height / 2 + 200);
     }
   }
 }

@@ -118,7 +118,7 @@ class Population {
 
     this.players = [];
     arrayCopy(children, this.players);
-    bestNow.Color = color(0, 255, 0)
+
 
      //set the children as the current this.playersulation
 
@@ -248,13 +248,13 @@ class Population {
     let aliveCount = 0;
 
 
-
     for (var i = 0; i < this.players.length; i++) {
 
       if (i < (this.players.length/this.batches)*this.batchNo && i > (this.players.length/this.batches)*(this.batchNo-1)) {
 
         if (!this.players[i].dead) {
           aliveCount++;
+
           this.players[i].look(); //get inputs for brain
           this.players[i].think(); //use outputs from neural network
           this.players[i].update(); //move the player according to the outputs from the neural network
@@ -274,6 +274,10 @@ class Population {
 
     if (aliveCount == 0) {
       this.batchNo++;
+      if (bestGen != null){
+        bestGen = new Player()
+        bestGen.brain = population.players[getBest()].brain
+      }
     }
   }
 

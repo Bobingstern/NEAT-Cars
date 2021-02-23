@@ -313,7 +313,7 @@ class Genome {
 
     //1% of the time add a node
     var rand3 = random(1);
-    if (rand3 < 0.3) {
+    if (rand3 < 0.05) {
 
       this.addNode(innovationHistory);
 
@@ -483,11 +483,13 @@ class Genome {
         stroke(0, 0, 255);
         ee = 1
       }
-      push()
-      stroke(255, 255, 255, 50)
-      strokeWeight(1);
-      line(from.x, from.y, to.x, to.y);
-      pop()
+
+        push()
+        stroke(255, 255, 255, this.genes[i].weight*200)
+        strokeWeight(1);
+        line(from.x, from.y, to.x, to.y);
+        pop()
+
       if (this.outs.length > 0){
         if (this.outs[i] > 0.5){
 
@@ -500,11 +502,7 @@ class Genome {
 
 
 
-      if (i == this.genes.length-1){
-        stroke(0)
-        strokeWeight(5);
-        line(from.x, from.y, to.x, to.y);
-      }
+
 
 
 
