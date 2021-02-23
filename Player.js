@@ -24,7 +24,7 @@ class Player {
 
 
 
-    this.genomeInputs = 5;
+    this.genomeInputs = 7;
     this.genomeOutputs = 4;
     this.brain = new Genome(this.genomeInputs, this.genomeOutputs);
     this.vel.limit(2)
@@ -434,6 +434,8 @@ class Player {
        }
      }
    }
+   this.vision.push(this.vel.mag())
+   this.vision.push(-this.angle)
 
 
 

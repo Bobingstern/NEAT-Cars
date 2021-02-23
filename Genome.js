@@ -559,11 +559,13 @@ class Genome {
       text(round(this.ins[2]), nodePoses[2].x, nodePoses[2].y);
       text(round(this.ins[3]), nodePoses[3].x, nodePoses[3].y);
       text(round(this.ins[4]), nodePoses[4].x, nodePoses[4].y);
+      text(round(this.ins[5]), nodePoses[5].x, nodePoses[5].y);
+      text(round(this.ins[6]), nodePoses[6].x, nodePoses[6].y);
       pop()
 
 
     }
-    text("bias", nodePoses[5].x - 20, nodePoses[5].y);
+    text("bias", nodePoses[7].x - 20, nodePoses[7].y);
     textAlign(LEFT);
     text("Forward ", nodePoses[nodePoses.length - 4].x + 20, nodePoses[nodePoses.length - 4].y);
     text("Backward ", nodePoses[nodePoses.length - 3].x + 20, nodePoses[nodePoses.length - 3].y);
