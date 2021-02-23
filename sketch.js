@@ -118,10 +118,26 @@ let YummyGates = [
 ]
 
 
+let batches = 5
+
+
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 
+function getBest(){
+  var best = 0
+  var best_player = 0
+  for (var i=0;i<population.players.length;i++){
+    if (population.players[i].fitness > best && (population.players.length/population.batches)*population.batchNo && i > (population.players.length/population.batches)*(population.batchNo-1)){
+      best = population.players[i].fitness
+      best_player = i
+    }
+  }
+  return best_player
+}
+
+
 function StartEvo(){
-  population = new Population(100);
+  population = new Population(500);
 }
 
 
@@ -150,6 +166,12 @@ function draw() {
   }
   if (started){
     drawToScreen();
+
+    text("Gen: "+population.gen, 10, 600)
+    text("Batch: "+population.batchNo+"/"+population.batches, 10, 650)
+    text("Showing: "+round(population.players.length/population.batches/population.players.length*100)+"% of Players", 10, 700)
+
+
     if (showBestEachGen) { //show the best of each gen
       showBestPlayersForEachGeneration();
     } else if (humanPlaying) { //if the user is controling the ship[
@@ -157,13 +179,15 @@ function draw() {
     } else if (runBest) { // if replaying the best ever game
       showBestEverPlayer();
     } else { //if just evolving normally
-      if (!population.done()) { //if any players are alive then update them
-        population.updateAlive();
+      if (population.batchNo != population.batches+1) { //if any players are alive then update them
+        population.updateAliveInBatches();
       } else { //all dead
         //genetic algorithm
         population.naturalSelection();
       }
     }
+
+
   }
   else{
     editor.update()
@@ -228,14 +252,15 @@ function drawBrain() { //show the brain of whatever genome is currently showing
   var h = 300;
 
   if (runBest) {
-    population.bestPlayer.brain.drawGenome(startX, startY, w, h);
+    getBest().brain.drawGenome(startX, startY, w, h);
   } else
   if (humanPlaying) {
     showBrain = false;
   } else if (showBestEachGen) {
     genPlayerTemp.brain.drawGenome(startX, startY, w, h);
   } else {
-    population.players[0].brain.drawGenome(startX, startY, w, h);
+    let boi = getBest()
+    population.players[boi].brain.drawGenome(startX, startY, w, h);
   }
 }
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

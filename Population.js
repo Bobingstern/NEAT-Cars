@@ -9,9 +9,14 @@ class Population {
     this.innovationHistory = []; // new ArrayList<connectionHistory>();
     this.genPlayers = []; //new ArrayList<Player>();
     this.species = []; //new ArrayList<Species>();
+    this.batchNo = 1
+    this.worldsPerBatch = 5
+
+    this.batches = batches
 
     this.massExtinctionEvent = false;
     this.newStage = false;
+
 
     for (var i = 0; i < size; i++) {
       this.players.push(new Player());
@@ -68,7 +73,9 @@ class Population {
   //this function is called when all the players in the this.players are dead and a newthis.generation needs to be made
   naturalSelection() {
 
-    // this.batchNo = 0;
+    this.batchNo = 1;
+    var bestNow = new Player()
+    bestNow.brain = this.players[getBest()].brain
     var previousBest = this.players[0];
     this.speciate(); //seperate the this.players varo this.species
     this.calculateFitness(); //calculate the fitness of each player
@@ -110,7 +117,12 @@ class Population {
     }
 
     this.players = [];
-    arrayCopy(children, this.players); //set the children as the current this.playersulation
+    arrayCopy(children, this.players);
+    bestNow.Color = color(0, 255, 0)
+
+     //set the children as the current this.playersulation
+
+    this.players.push(bestNow)
     this.gen += 1;
     for (var i = 0; i < this.players.length; i++) { //generate networks for each of the children
       this.players[i].brain.generateNetwork();
@@ -234,8 +246,12 @@ class Population {
     //update all the players which are alive
   updateAliveInBatches() {
     let aliveCount = 0;
+
+
+
     for (var i = 0; i < this.players.length; i++) {
-      if (this.playerInBatch(this.players[i])) {
+
+      if (i < (this.players.length/this.batches)*this.batchNo && i > (this.players.length/this.batches)*(this.batchNo-1)) {
 
         if (!this.players[i].dead) {
           aliveCount++;
@@ -250,7 +266,10 @@ class Population {
           }
         }
       }
+
     }
+
+
 
 
     if (aliveCount == 0) {
@@ -259,21 +278,11 @@ class Population {
   }
 
 
-  playerInBatch(player) {
-    for (var i = this.batchNo * this.worldsPerBatch; i < min((this.batchNo + 1) * this.worldsPerBatch, worlds.length); i++) {
-      if (player.world == worlds[i]) {
-        return true;
-      }
-    }
 
-    return false;
-
-
-  }
 
   stepWorldsInBatch() {
       for (var i = this.batchNo * this.worldsPerBatch; i < min((this.batchNo + 1) * this.worldsPerBatch, worlds.length); i++) {
-        worlds[i].Step(1 / 30, 10, 10);
+        this.players[i].update()
       }
     }
     //------------------------------------------------------------------------------------------------------------------------------------------

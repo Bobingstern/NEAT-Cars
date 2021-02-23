@@ -14,7 +14,7 @@ class Player {
 
     this.pos = createVector(800, 450)
     this.vel = createVector()
-    this.drag = 0.95
+    this.drag = 0.94
     this.angle = -0.75
     this.angularVelocity = 0
     this.angularDrag = 0.9
@@ -187,12 +187,10 @@ class Player {
 
       if (colled){
         //ded
+
         this.dead = true
-        this.Color = color(0, 0, 0)
       }
-      else{
-        this.Color = color(255, 0, 0)
-      }
+
 
 
       colled = false
@@ -201,18 +199,23 @@ class Player {
         var hit = collideLineLine(check[0], check[1], check[2], check[3], this.edgeLines[j][0], this.edgeLines[j][1], this.edgeLines[j][2], this.edgeLines[j][3])
         if (hit){
           colled = true
-          this.on++
+
           this.fitness += 100
           this.score++
           this.lifespan+=10
           if (this.on > YummyGates.length-1){
             this.on=0
+            console.log('new lap')
           }
 
         }
       }
 
+      if (colled){
+        this.on++
+      }
 
+      this.score = this.fitness
       line(YummyGates[this.on][0], YummyGates[this.on][1], YummyGates[this.on][2], YummyGates[this.on][3])
 
 
@@ -231,9 +234,10 @@ class Player {
         this.old = this.pos.copy()
       }
 
-      if (this.oofMeter > 2)[
+      if (this.oofMeter > 2){
+        this.fitness -= 100
         this.dead = true
-      ]
+      }
 
 
 
