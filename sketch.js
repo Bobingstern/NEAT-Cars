@@ -186,7 +186,10 @@ function draw() {
         population.updateAliveInBatches();
         if (bestGen != null){
           if (!bestGen.dead){
-            bestGen.Color = color(0, 255, 0)
+            if (!showBest){
+              bestGen.Color = color(0, 255, 0)
+              bestGen.showField = true
+            }
             bestGen.look()
             bestGen.think()
             bestGen.update()

@@ -14,11 +14,11 @@ class Player {
 
     this.pos = createVector(800, 450)
     this.vel = createVector()
-    this.drag = 0.93
+    this.drag = 0.935
     this.angle = -0.75
     this.angularVelocity = 0
     this.angularDrag = 0.9
-    this.power = 0.3
+    this.power = 0.32
     this.turnSpeed = 0.008
     this.visionLines = []
 
@@ -37,6 +37,7 @@ class Player {
     this.oofMeter = 0
     this.old = this.pos.copy()
     this.time = 0
+    this.showField = false
 
 
   }
@@ -60,9 +61,12 @@ class Player {
         //line(this.edgeLines[i][0], this.edgeLines[i][1], this.edgeLines[i][2],this.edgeLines[i][3])
       }
 
-      for (var i=0;i<this.visionLines.length;i++){
-        strokeWeight(2)
-        //line(this.visionLines[i][0], this.visionLines[i][1], this.visionLines[i][2],this.visionLines[i][3])
+
+      if (this.showField){
+        for (var i=0;i<this.visionLines.length;i++){
+          strokeWeight(2)
+          line(this.visionLines[i][0], this.visionLines[i][1], this.visionLines[i][2],this.visionLines[i][3])
+        }
       }
       //---
 
@@ -216,11 +220,11 @@ class Player {
       }
 
       this.score = this.fitness
-      line(YummyGates[this.on][0], YummyGates[this.on][1], YummyGates[this.on][2], YummyGates[this.on][3])
+      //line(YummyGates[this.on][0], YummyGates[this.on][1], YummyGates[this.on][2], YummyGates[this.on][3])
 
 
       this.time++
-      if (this.time > 500)[
+      if (this.time > 1000)[
         this.dead = true
       ]
 
@@ -421,7 +425,9 @@ class Player {
 
          var hitPoint = collideLineLine(Default[i][0], Default[i][1], Default[i][2], Default[i][3], this.visionLines[j][0], this.visionLines[j][1], this.visionLines[j][2], this.visionLines[j][3], true)
          colled = true
-         //ellipse(hitPoint.x, hitPoint.y, 5, 5)
+         if (this.showField){
+           ellipse(hitPoint.x, hitPoint.y, 5, 5)
+          }
 
          this.vision.push(dist(hitPoint.x, hitPoint.y, this.pos.x, this.pos.y))
 

@@ -485,16 +485,17 @@ class Genome {
       }
 
         push()
-        stroke(255, 255, 255, this.genes[i].weight*200)
+        stroke(255, 255, 255, 100)
         strokeWeight(1);
         line(from.x, from.y, to.x, to.y);
         pop()
 
       if (this.outs.length > 0){
         if (this.outs[i] > 0.5){
-
+          triggers.push([nodeNumbers.indexOf(this.genes[i].toNode.number), ee])
           strokeWeight(1.5);
           line(from.x, from.y, to.x, to.y);
+
         }
 
       }
@@ -516,6 +517,22 @@ class Genome {
       stroke(0);
       strokeWeight(1);
       ellipse(nodePoses[i].x, nodePoses[i].y, 20, 20);
+      textSize(10);
+      fill(0);
+      textAlign(CENTER, CENTER);
+
+    }
+
+    for (var i = 0; i < triggers.length; i++) {
+      if (triggers[i][1] == 1){
+        fill(0, 0, 255);
+      }
+      else{
+        fill(255, 0, 0);
+      }
+      stroke(0);
+      strokeWeight(1);
+      ellipse(nodePoses[triggers[i][0]].x, nodePoses[triggers[i][0]].y, 20, 20);
       textSize(10);
       fill(0);
       textAlign(CENTER, CENTER);
