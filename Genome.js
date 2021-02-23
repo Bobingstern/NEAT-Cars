@@ -483,22 +483,30 @@ class Genome {
         stroke(0, 0, 255);
         ee = 1
       }
+      push()
+      stroke(255, 255, 255, 50)
+      strokeWeight(1);
+      line(from.x, from.y, to.x, to.y);
+      pop()
       if (this.outs.length > 0){
         if (this.outs[i] > 0.5){
 
-          strokeWeight(map(abs(this.outs[i]), 0, 1, 0, 3));
+          strokeWeight(1.5);
           line(from.x, from.y, to.x, to.y);
         }
 
-
-
       }
+
+
+
 
       if (i == this.genes.length-1){
         stroke(0)
         strokeWeight(5);
         line(from.x, from.y, to.x, to.y);
       }
+
+
 
 
 

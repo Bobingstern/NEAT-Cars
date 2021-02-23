@@ -14,7 +14,7 @@ class Player {
 
     this.pos = createVector(800, 450)
     this.vel = createVector()
-    this.drag = 0.94
+    this.drag = 0.93
     this.angle = -0.75
     this.angularVelocity = 0
     this.angularDrag = 0.9

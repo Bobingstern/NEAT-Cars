@@ -118,7 +118,7 @@ let YummyGates = [
 ]
 
 
-let batches = 5
+let batches = 4
 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ function getBest(){
 
 
 function StartEvo(){
-  population = new Population(500);
+  population = new Population(300);
 }
 
 
